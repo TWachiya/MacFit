@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -15,14 +16,26 @@ class AuthController extends Controller
         $validated = $request->validate([
             'name'=>'required|string|max:40',
             'email'=>'required|email|unique:users,email',
-            'password'=>'required|string|min:4|max:15|confirmed'
+            'password'=>'required|string|min:4|max:15|confirmed',
+            'user_image'=>'nullable|image|max:255|mimes:jpeg,png,jpg'
         ]);
-
+        
+        $role= Role::where('name','User')->first();
+        
         $user = new User();
         $user->name = $validated['name'];
         $user->email = $validated['email'];
+        $user->role_id=$role->id;
 
         $user->password= Hash::make($validated['password']);
+
+        if($request->hasFile('user_image')){
+            $filename =$request->file('user_image')->store('users', 'public');
+            
+        } else{
+            $filename =null;
+        }
+        $user->user_image = $filename;
 
         try{
             $user->save();
@@ -53,7 +66,12 @@ class AuthController extends Controller
             'token'=>$token,
             'message'=>'Login Successful!',
             'user'=>$user,
+            'abilities'=>$user->abilities(),
         ], 201);
 }
-}
 
+public function logout(Request $request){
+        $request->user()->currentAccessToken()->delete();
+        return response()->json('Logout Successful.');
+}
+}
