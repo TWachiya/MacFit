@@ -25,7 +25,11 @@ class User extends Authenticatable
 
         'is_active',
         'user_image',
-        'role_id'
+        'role_id',
+        'phoneNumber',
+        'gymLocation',
+        'gender',
+        'dob'
     ];
 
     /**
@@ -52,13 +56,14 @@ class User extends Authenticatable
 
         public function role(){
             return $this->belongsTo(Role::class);
+            
         }
         public function abilities(){
             return [
-                'admin' =>$this->role =1,
-                'user' =>$this->role =2,
-                'staff' =>$this->role =3,
-                'trainer' =>$this->role =4,
+                'admin' =>$this->role->id ===1,
+                'user' =>$this->role->id ===2,
+                'staff' =>$this->role->id===3,
+                'trainer' =>$this->role->id===4,
                 ];
         }
     }

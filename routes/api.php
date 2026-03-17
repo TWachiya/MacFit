@@ -2,29 +2,37 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BundleController;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
-
 use App\Http\Controllers\RoleController;
-use App\Models\Role;
-
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\EquipmentController;
 use App\Http\Controllers\GymController;
+use App\Http\Controllers\ResendEmailVerificiationController;
 use App\Http\Controllers\SubscriptionController;
-use App\Models\Bundle;
-use App\Models\Category;
-use App\Models\Equipment;
+use App\Http\Controllers\VerifyEmailController;
+use Illuminate\Support\Facades\Route;
 
+
+// Public Routes
 Route::post('/register', [AuthController::class, 'register' ]);
 Route::post('/login', [AuthController::class, 'login' ]);
 
-Route::post('/logout',  [AuthController::class, 'logout' ]);
 
+// Email Verification Routes
+Route::get('/email/verify/{id}/{hash}', [VerifyEmailController::class, 'verifyEmail'])
+->name('verification.verify')
+-> middleware(['signed', 'throttle:6,1']);
+
+Route::post('/email/resend', [ResendEmailVerificiationController::class, 'resendVerificationEmail'])
+-> middleware(['throttle:6,1']);
+
+
+// Private Routes
 Route::middleware('auth:sanctum')->group(function () {
 // Route::get('/user', function (Request $request) {
 //     return $request->user();
 // })->middleware('auth:sanctum');
+
+Route::post('/logout',  [AuthController::class, 'logout' ]);
 
 Route::post('/saveRole',[RoleController::class, 'createRole']);
 Route::get('/getRoles',[RoleController::class, 'readAllRoles']);

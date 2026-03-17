@@ -11,7 +11,7 @@ class BundleController extends Controller
      public function createBundle(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|string',
+            'name' => 'required|string|unique:bundles,name',
             'start_time' => 'required',
             'duration' => 'required',
             'description' => 'nullable|string|max:1000',
