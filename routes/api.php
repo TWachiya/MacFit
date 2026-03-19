@@ -9,6 +9,7 @@ use App\Http\Controllers\GymController;
 use App\Http\Controllers\ResendEmailVerificiationController;
 use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\VerifyEmailController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -74,3 +75,5 @@ Route::get('/getSubscriptions',[SubscriptionController::class, 'readAllSubscript
 Route::get('/getSubscription/{id}',[SubscriptionController::class, 'readSubscription']);
 Route::post('/updateSubscription/{id}',[SubscriptionController::class, 'updateSubscription']);
 Route::delete('/deleteSubscription/{id}',[SubscriptionController::class, 'deleteSubscription']);
+
+Route::resource('users', UserController::class);
